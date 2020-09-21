@@ -30,9 +30,9 @@ color_mean = (104, 117, 123)
 input_size = 300
 
 train_dataset = MyDataset(train_img_list, train_anno_list, phase="train", transform=DataTransform(input_size, color_mean), anno_xml=Anno_xml(classes))
-val_dataset = MyDataset(val_img_list, train_anno_list, phase="val", transform=DataTransform(input_size, color_mean), anno_xml=Anno_xml(classes))
+val_dataset = MyDataset(val_img_list, val_anno_list, phase="val", transform=DataTransform(input_size, color_mean), anno_xml=Anno_xml(classes))
 
-batch_size = 16
+batch_size = 32
 train_dataloader = data.DataLoader(train_dataset, batch_size, shuffle=True, collate_fn=my_collate_fn)
 val_dataloader = data.DataLoader(val_dataset, batch_size, shuffle=False, collate_fn=my_collate_fn)
 
@@ -76,7 +76,7 @@ def train_model(net, dataloader_dict, criterion, optimizer, num_epochs):
 
         print("---"*20)
         print("Epoch {}/{}".format(epoch+1, num_epochs))
-
+        print("---"*20)
         for phase in ["train", "val"]:
             if phase == "train":
                 net.train()
@@ -112,8 +112,8 @@ def train_model(net, dataloader_dict, criterion, optimizer, num_epochs):
 
                         if (iteration %10) == 0:
                             t_iter_end = time.time()
-                            duration = t_iter_start - t_iter_start
-                            print("Iteration {} || Loss: {:.4f} || 10iter: {:.4f} sec".format(iteration, loss, loss.item(), duration))
+                            duration = t_iter_end - t_iter_start
+                            print("Iteration {} || Loss: {:.4f} || 10iter: {:.4f} sec".format(iteration,  loss.item(), duration))
 
                             t_iter_start = time.time()
 
@@ -130,8 +130,8 @@ def train_model(net, dataloader_dict, criterion, optimizer, num_epochs):
         print("Duration: {:.4f} sec".format(t_epoch_end - t_epoch_start))
         t_epoch_start = time.time()
 
-        loag_epoch = {"epoch": epoch+1, "train_loss": epoch_train_loss, "val_loss": epoch_val_loss}
-        logs.append(loag_epoch)
+        log_epoch = {"epoch": epoch+1, "train_loss": epoch_train_loss, "val_loss": epoch_val_loss}
+        logs.append(log_epoch)
 
         df = pd.DataFrame(logs)
         df.to_csv("./data/ssd_log.csv")
@@ -140,7 +140,7 @@ def train_model(net, dataloader_dict, criterion, optimizer, num_epochs):
         epoch_val_loss = 0.0
 
         if (epoch+1) % 10 == 0:
-            torch.save(net.state_dict(), "data/weights/ssd300" + str(epoch+1) + ".pth")
+            torch.save(net.state_dict(), "./data/weights/ssd300" + str(epoch+1) + ".pth")
 
 num_epochs = 30
 train_model(net, dataloader_dict, criterion, optimizer, num_epochs=num_epochs)
