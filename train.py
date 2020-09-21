@@ -12,8 +12,8 @@ from extract_inform_annotation import Anno_xml
 from model import SSD
 from multiboxloss import MultiBoxLoss
 
-#device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") #enable if u have gpu
-device = torch.device("cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") #enable if u have gpu
+#device = torch.device("cpu")
 print("device:", device)
 torch.backends.cudnn.benchmark = True
 
@@ -134,7 +134,7 @@ def train_model(net, dataloader_dict, criterion, optimizer, num_epochs):
         logs.append(loag_epoch)
 
         df = pd.DataFrame(logs)
-        df.to_csv("./data/ssd_log,csv")
+        df.to_csv("./data/ssd_log.csv")
 
         epoch_train_loss = 0.0
         epoch_val_loss = 0.0
