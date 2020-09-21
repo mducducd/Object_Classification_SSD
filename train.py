@@ -84,7 +84,7 @@ def train_model(net, dataloader_dict, criterion, optimizer, num_epochs):
             else:
                 if (epoch+1) % 10 == 0:
                     net.eval()
-                    print("---")*10
+                    print("---"*10)
                     print("(Validation)")
                 else:
                     continue
